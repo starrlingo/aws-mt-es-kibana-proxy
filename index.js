@@ -26,38 +26,38 @@ var debug             = true;
 var yargs = require('yargs')
   .usage('usage: $0 <aws-es-cluster-endpoint> [options]')
   .option('a', {
-    alias: 'auth-classname',
-    default: 'exampleLocalAuth',
-    demand: false,
-    describe: 'the name of authentication class',
-    type: 'string'
+    alias    : 'auth-classname',
+    default  : 'exampleLocalAuth',
+    demand   : false,
+    describe : 'the name of authentication class',
+    type     : 'string'
   })
   .option('b', {
-    alias: 'bind-address',
-    default: '127.0.0.1',
-    demand: false,
-    describe: 'the ip address to bind to',
-    type: 'string'
+    alias    : 'bind-address',
+    default  : '127.0.0.1',
+    demand   : false,
+    describe : 'the ip address to bind to',
+    type     : 'string'
   })
   .option('n', {
-    alias: 'proxy-name',
-    default: 'aws-mt-kibana',
-    demand: true,
-    describe: 'the name of kibana proxy',
-    type: 'string'
+    alias    : 'proxy-name',
+    default  : 'aws-mt-kibana',
+    demand   : true,
+    describe : 'the name of kibana proxy',
+    type     : 'string'
   })
   .option('p', {
-    alias: 'port',
-    default: 80,
-    demand: false,
-    describe: 'the port to bind to',
-    type: 'number'
+    alias    : 'port',
+    default  : 80,
+    demand   : false,
+    describe : 'the port to bind to',
+    type     : 'number'
   })
   .option('r', {
-    alias: 'region',
-    demand: false,
-    describe: 'the region of the Elasticsearch cluster',
-    type: 'string'
+    alias    : 'region',
+    demand   : false,
+    describe : 'the region of the Elasticsearch cluster',
+    type     : 'string'
   })
   .help()
   .version()
@@ -101,14 +101,14 @@ var PORT           = argv.p;
 var AUTH_API_NAME  = argv.a;
 
 // Load authentication module
-var exampleLocalAuth    = require('./lib/'+ AUTH_API_NAME);
+var authStrategy    = require('./lib/'+ AUTH_API_NAME);
 
 // Create AWS cloudwatch logger
 var stream = createCWStream({
-  logGroupName: util.format('es-kibana-proxy-access-log/%s', PROXY_NAME),
-  logStreamName: os.hostname(),
-  cloudWatchLogsOptions: {
-    region: REGION
+  logGroupName          : util.format('es-kibana-proxy-access-log/%s', PROXY_NAME),
+  logStreamName         : os.hostname(),
+  cloudWatchLogsOptions : {
+    region              : REGION
   }
 });
 
@@ -118,21 +118,21 @@ function reqSerializer(req) {
   var xForwardedFor = req.headers["X-Forwarded-For"];
   if(!xForwardedFor) xForwardedFor = null;
   return {
-    method: req.method,
-    url: req.url,
-    headers: req.headers,
-    remoteAddress: ip,
-    "x-forwarded-for": xForwardedFor
+    method            : req.method,
+    url               : req.url,
+    headers           : req.headers,
+    remoteAddress     : ip,
+    "x-forwarded-for" : xForwardedFor
   };
 }
 
 var log = new Logger({
-  name: 'index',
-  streams: [
+  name    : 'index',
+  streams : [
     {
-      stream: stream,
-      type: 'raw',
-      level: 'info'
+      stream : stream,
+      type   : 'raw',
+      level  : 'info'
     }
   ],
   serializers: {
@@ -211,7 +211,7 @@ function login(req, res, next) {
  * Get login credential via assume role
  */
 function getCredential(id, password, awsAccountId, callback) {
-  var auth = new Auth(exampleLocalAuth);
+  var auth = new Auth(authStrategy);
   auth.verify(id, password, function(err, data){
     if (err) {
       if(debug) console.log('Error: Authentication failed. ID:', id, err);
@@ -246,10 +246,10 @@ function getCredential(id, password, awsAccountId, callback) {
 var creds;
 function genCreds(req, res, next) {
   var options = {
-    accessKeyId: req.session.accessKeyId,
-    secretAccessKey: req.session.secretAccessKey,
-    sessionToken: req.session.sessionToken,
-    expireTime: req.session.expiration
+    accessKeyId     : req.session.accessKeyId,
+    secretAccessKey : req.session.secretAccessKey,
+    sessionToken    : req.session.sessionToken,
+    expireTime      : req.session.expiration
   };
   creds = new AWS.Credentials(options);
   return creds.get(function (err) {
@@ -298,11 +298,12 @@ app.use(function (req, res) {
 
 // add aws signature to authorization header when start to proxy request
 proxy.on('proxyReq', function (proxyReq, req, res, options) {
-  var endpoint = new AWS.Endpoint(ENDPOINT);
-  var request = new AWS.HttpRequest(endpoint);
+  var endpoint   = new AWS.Endpoint(ENDPOINT);
+  var request    = new AWS.HttpRequest(endpoint);
   request.method = proxyReq.method;
-  request.path = proxyReq.path;
+  request.path   = proxyReq.path;
   request.region = REGION;
+
   if (Buffer.isBuffer(req.body)) request.body = req.body;
   if (!request.headers) request.headers = {};
   request.headers['presigned-expires'] = false;
@@ -314,7 +315,7 @@ proxy.on('proxyReq', function (proxyReq, req, res, options) {
   proxyReq.setHeader('X-Amz-Date', request.headers['X-Amz-Date']);
   proxyReq.setHeader('Authorization', request.headers['Authorization']);
   if (request.headers['x-amz-security-token']) proxyReq.setHeader('x-amz-security-token', request.headers['x-amz-security-token']);
-  var sess  = req.session;
+  var sess      = req.session;
   var timestamp = new Date().toISOString();
   log.info({'req': req, 'res': res, 'id': sess.user.name, 'tenantId': sess.tenantId, 'action': 'proxy', 'timestamp': timestamp});
 });
@@ -323,9 +324,9 @@ proxy.on('proxyReq', function (proxyReq, req, res, options) {
 http.createServer(app).listen(PORT);
 
 console.log(figlet.textSync('AWS ES Proxy!', {
-  font: 'Speed',
-  horizontalLayout: 'default',
-  verticalLayout: 'default'
+  font             : 'Speed',
+  horizontalLayout : 'default',
+  verticalLayout   : 'default'
 }));
 
 console.log('AWS ES cluster available at http://' + BIND_ADDRESS + ':' + PORT);

@@ -1,0 +1,40 @@
+{
+  "name": "aws-mt-es-kibana-proxy",
+  "version": "1.0.0",
+  "description": "A proxy for multi-tenant Elasticsearch and Kibana",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starrlingo/aws-mt-es-kibana-proxy.git"
+  },
+  "keywords": [
+    "Multi-tenant Kibana",
+    "Kibana",
+    "AWS",
+    "ES",
+    "ElasticSearch",
+    "AWS Elasticsearch",
+    "AWS ES Proxy",
+    "AWS ES Kibana"
+  ],
+  "author": "starrlingo",
+  "license": "BSD",
+  "dependencies": {
+    "aws": "0.0.3-2",
+    "aws-sdk": "~2.3.10",
+    "basic-auth": "^1.0.4",
+    "body-parser": "~1.15.1",
+    "bunyan": "^1.8.1",
+    "bunyan-cloudwatch": "^2.0.0",
+    "express": "~4.13.4",
+    "express-session": "^1.13.0",
+    "figlet": "~1.1.2",
+    "http-proxy": "~1.13.2",
+    "ipaddr.js": "^1.1.1",
+    "yargs": "~4.7.0",
+    "request": "~2.74.0"
+  }
+}

@@ -76,10 +76,12 @@ You should launch an EC2 instance (associated with IAM role) to access another A
                   "<domain ARN>/_plugin/kibana/*",
                   "<domain ARN>/_nodes",
                   "<domain ARN>/_nodes/*",
+                  "<domain ARN>/_cluster/health/*",
                   "<domain ARN>/.kibana-4",
-                  "<domain ARN>/.kibana-4-easontest",
-                  "<domain ARN>/.kibana-4-easontest/*",
-                  .......Insert any policy you want here.....
+                  "<domain ARN>/.kibana-4-<your tenantId>",
+                  "<domain ARN>/.kibana-4-<your tenantId>/*",
+                  .......Insert any policy you want in the following.....                  
+                  "<domain ARN>/logstash-tenant1"
               ]
           }
       ]

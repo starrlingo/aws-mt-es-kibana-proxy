@@ -85,7 +85,19 @@ You should launch an EC2 instance (associated with IAM role) to access another A
       ]
   }
   ~~~
-2. Customize your own authentication code
+2. Grant the permission in access policy of AWS Elasticsearch service for each of your login user or tenantId
+  Click "Modify access policy" to add the following policy
+  ~~~
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<your account id>:role/<your iam role name>"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:<region>:<your account id>:domain/<your es domain name>/"
+    },  
+  ~~~
+3. Customize your own authentication code
 
   The sample authentication code is in `lib/exampleLocalAuth.js` (Authenticate in local) and `lib/exampleApiAuth.js` (Authienticate by API). This class defined a static method called authenticate to verify the user's identity.
 

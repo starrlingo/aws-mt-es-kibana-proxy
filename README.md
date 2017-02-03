@@ -86,6 +86,7 @@ You should launch an EC2 instance (associated with IAM role) to access another A
   }
   ~~~
 2. Grant the permission in access policy of AWS Elasticsearch service for each of your login user or tenantId
+
   Click "Modify access policy" to add the following policy
   ~~~
     {
@@ -95,7 +96,7 @@ You should launch an EC2 instance (associated with IAM role) to access another A
       },
       "Action": "es:*",
       "Resource": "arn:aws:es:<region>:<your account id>:domain/<your es domain name>/"
-    },  
+    }
   ~~~
 3. Customize your own authentication code
 

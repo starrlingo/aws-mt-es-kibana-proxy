@@ -1,3 +1,11 @@
+Table of Contents
+=================
+   * [AWS Multi-tenancy ES/Kibana Proxy](#aws-multi-tenancy-eskibana-proxy)
+      * [Features](#features)
+      * [Installation](#installation)
+      * [Configuration](#configuration)
+      * [Usage](#usage)
+
 # AWS Multi-tenancy ES/Kibana Proxy
 This proxy inspired from [santthosh/aws-es-kibana](https://github.com/santthosh/aws-es-kibana). The enhanced features are descripted as following.
 ## Features
